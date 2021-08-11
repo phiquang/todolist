@@ -55,15 +55,16 @@ function NewTask() {
                             <span>{formatDate(new Date(dateTask))}</span>
                             <img alt="calendar" src={calendar} />
                         </div>
-                        <input type="date" value={dateTask} onChange={e => onChange(e, setDateTask)} />
+                        <input type="date" min={getDateNow()} value={dateTask} onChange={e => onChange(e, setDateTask)} />
                     </div>
                     <div className="item-option">
                         <div className="label">
                             Piority
                         </div>
                         <select value={piorityTask} onChange={e => onChange(e, setPiorityTask)}>
+                            <option value="low">Low</option>
                             <option value="normal">Normal</option>
-                            <option value="special">Special</option>
+                            <option value="high">High</option>
                         </select>
                     </div>
                 </div>

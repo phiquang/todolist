@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react';
 import { commonStore } from '../../context';
-import { formatDate } from '../../common';
+import { formatDate, getDateNow } from '../../common';
 
 import calendar from '../../images/calendar.png';
 
@@ -8,6 +8,7 @@ function ListTasks() {
     const { state, dispatch } = useContext(commonStore);
     const [search, setSearch] = useState('');
     const [data, setData] = useState([]);
+    const [sortData, setSortData] = useState([]);
     const [active, setActive] = useState(false);
     const [listCheckBox, setListCheckBox] = useState([]);
     const [detail, setDetail] = useState(-1);
@@ -83,6 +84,15 @@ function ListTasks() {
     }, [state]);
 
     useEffect(() => {
+        data.sort((a,b)=>{
+            // Turn your strings into dates, and then subtract them
+            // to get a value that is either negative, positive, or zero.
+            return new Date(a.date) - new Date(b.date);
+        });
+        setSortData(data);
+    }, [data]);
+
+    useEffect(() => {
         if (listCheckBox.length > 0) {
             setActive(true);
         } else {
@@ -99,8 +109,8 @@ function ListTasks() {
             <h1 className="title">To Do List</h1>
             <input placeholder="Search" onChange={e => onChange(e, setSearch)} type="text" value={search} />
             <div className="to-do-list">
-                {data.length > 0 ? (
-                    data.map((item, index) => (
+                {sortData.length > 0 ? (
+                    sortData.map((item, index) => (
                         <div key={index}>
                             <div className="to-do-list-item">
                                 <div className="checkbox-custom">
@@ -131,15 +141,16 @@ function ListTasks() {
                                                 <span>{formatDate(new Date(dateTask))}</span>
                                                 <img alt="calendar" src={calendar} />
                                             </div>
-                                            <input type="date" value={dateTask} onChange={e => onChange(e, setDateTask)} />
+                                            <input type="date" min={getDateNow()} value={dateTask} onChange={e => onChange(e, setDateTask)} />
                                         </div>
                                         <div className="item-option">
                                             <div className="label">
                                                 Piority
                                             </div>
                                             <select value={piorityTask} onChange={e => onChange(e, setPiorityTask)}>
+                                                <option value="low">Low</option>
                                                 <option value="normal">Normal</option>
-                                                <option value="special">Special</option>
+                                                <option value="high">High</option>
                                             </select>
                                         </div>
                                     </div>
